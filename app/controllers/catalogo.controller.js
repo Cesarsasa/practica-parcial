@@ -60,17 +60,25 @@ exports.findAll = (req, res) => {
 
 // Find a single Tutorial with an id
 exports.findOne = (req, res) => {
-    const id = req.params.id;
+    const nombre = req.params.nombre;
 
-    Catalogo.findByPk(id)
-        .then(data => {
+    Catalogo.findOne({
+        where: { nombre: nombre }
+    })
+    .then(data => {
+        if (data) {
             res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error retrieving Catagolo with id=" + id
+        } else {
+            res.status(404).send({
+                message: `No se encontró ningún catálogo con el nombre: ${nombre}`
             });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: `Error al recuperar el catálogo con nombre=${nombre}`
         });
+    });
 };
 
 // Update a Tutorial by the id in the request
